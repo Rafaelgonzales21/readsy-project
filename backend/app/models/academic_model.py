@@ -4,18 +4,19 @@ from typing import List, Any
 @dataclass
 class Question:
     number: int
-    type: str
+    q_type: str
     difficulty: str
     question: str
     suggested_answer: str
 
 @dataclass
 class AcademicAnalysis:
-    document_tittle: str
-    document_type: str
-    authors: str
+    document_title: str
     summary: str
+    main_ideas: List[str]
     main_objectives: List[str]
-    key_concepts: List[str]
+    key_points: List[str]
+    insights: str
     conclusions: str
+    authors: List[str]
     questions: List[Question]

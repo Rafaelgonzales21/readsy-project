@@ -2,7 +2,7 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from api.routes_analysis import router as analysis_router
+from app.api.routes_analysis import router as analysis_router
 
 app = FastAPI(title="Academic Analyzer API")
 

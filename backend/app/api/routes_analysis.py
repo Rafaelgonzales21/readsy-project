@@ -1,13 +1,13 @@
 # Rutas relacionadas con el análisis académico
 
 from fastapi import APIRouter, UploadFile, File, Form
-from services.pdf_processor import extract_text_from_pdf
-from services.academic_evaluator import evaluate_document
-from schemas.analysis_schema import AcademicAnalysisSchema
+from app.services.pdf_processor import extract_text_from_pdf
+from app.services.academic_evaluator import evaluate_document
+from app.schemas.analysis_schema import AcademicAnalysisSchema
 
 router = APIRouter()
 
-@router.post("/analize", response_model=AcademicAnalysisSchema)
+@router.post("/analyze", response_model=AcademicAnalysisSchema)
 async def analyze_document(
     pdf: UploadFile = File(...),
     depth: str = Form(...),
@@ -32,21 +32,13 @@ async def analyze_document(
     analysis = evaluate_document(extracted_text, depth, questions)
 
     return AcademicAnalysisSchema(
-        document_title=analysis.document_title,
-        document_type=analysis.document_type,
-        authors=analysis.authors,
-        summary=analysis.summary,
-        main_ideas=analysis.main_ideas,
-        key_concepts=analysis.key_concepts,
-        conclusions=analysis.conclusions,
-        questions=[
-            {
-                "number": q.number,
-                "q_type": q.q_type,
-                "difficulty": q.difficulty,
-                "question": q.question,
-                "suggested_answer": q.suggested_answer
-            }
-            for q in analysis.questions
-        ]
-    )
+    document_title=analysis.document_title,
+    summary=analysis.summary,
+    main_objectives=analysis.main_objectives,
+    main_ideas=analysis.main_ideas,
+    key_points=analysis.key_points,
+    insights=analysis.insights,
+    conclusions=analysis.conclusions,
+    authors=analysis.authors,
+    questions=analysis.questions
+)
