@@ -32,16 +32,16 @@ def evaluate_document(text: str, depth: str, num_questions: int) -> AcademicAnal
     """
 
     prompt = f"""
-    You are an expert academic evaluator. Analyze the following document:
+    Eres un evaluador académico experto. Analiza el siguiente documento:
 
-    --- DOCUMENT CONTENT ---
+    --- CONTENIDO DEL DOCUMENTO ---
     {text}
-    ------------------------
+    -------------------------------
 
-    Depth level: {depth}
-    Number of questions: {num_questions}
+    Nivel de profundidad: {depth}
+    Número de preguntas: {num_questions}
 
-    Provide the output STRICTLY in valid JSON with the following structure:
+    Proporciona la salida ESTRICTAMENTE en JSON válido con la siguiente estructura:
 
     {{
         "summary": "...",
@@ -60,20 +60,20 @@ def evaluate_document(text: str, depth: str, num_questions: int) -> AcademicAnal
         ]
     }}
 
-    RULES:
-    - Do NOT add explanations.
-    - Do NOT add markdown.
-    - Do NOT add text before or after the JSON.
-    - Only return VALID JSON.
+    REGLAS:
+    - No añadas explicaciones.
+    - No utilices markdown.
+    - No incluyas texto antes o después del JSON.
+    - Devuelve únicamente JSON VÁLIDO.
     """
 
     response = client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[
-            {"role": "system", "content": "You are an expert academic evaluator."},
+            {"role": "system", "content": "Eres un evaluador académico experto."},
             {"role": "user", "content": prompt}
         ],
-        temperature=0.3,
+    temperature=0.3,
     )
 
     raw_output = response.choices[0].message.content
