@@ -117,11 +117,11 @@ function App() {
               <Icon path={P.book} size={15} stroke="#ffffff" />
             </div>
             <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.02em", color: "#0a0a0a" }}>
-              readsy
+              Readsy
             </span>
           </div>
           <span style={{ fontSize: "0.75rem", color: "#737373", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase" }}>
-            Academic Analyzer
+            Analizador Académico
           </span>
         </div>
       </nav>
@@ -139,7 +139,7 @@ function App() {
             textTransform: "uppercase", color: "#737373",
           }}>
             <Icon path={P.zap} size={11} />
-            AI-Powered · Academic Intelligence
+            Impulsado por IA · Inteligencia académica
           </div>
 
           <h1 className="display-font" style={{
@@ -150,12 +150,12 @@ function App() {
             color: "#0a0a0a",
             marginBottom: "1.2rem",
           }}>
-            Understand any<br />
-            <span style={{ color: "#737373" }}>paper, instantly.</span>
+            Entender cualquier<br />
+            <span style={{ color: "#737373" }}>documento, al instante.</span>
           </h1>
 
           <p style={{ fontSize: "1rem", color: "#737373", lineHeight: 1.75, maxWidth: 520, fontWeight: 400 }}>
-            Upload any academic PDF and receive an AI-generated breakdown in seconds — summaries, key ideas, objectives, insights, and auto-generated exam questions.
+            Sube cualquier PDF académico y obtén en cuestión de segundos un análisis generado por IA: resúmenes, ideas clave, objetivos, conclusiones y preguntas de examen generadas automáticamente.
           </p>
         </header>
 
@@ -204,10 +204,10 @@ function App() {
                 </div>
                 <div>
                   <p style={{ fontWeight: 600, fontSize: "0.9rem", color: "#0a0a0a", marginBottom: "0.25rem" }}>
-                    Drop PDF here or click to browse
+                    Arrastra el PDF aquí o haz clic para buscarlo
                   </p>
                   <p style={{ fontSize: "0.78rem", color: "#a3a3a3" }}>
-                    Supports PDF · Up to 50 MB
+                    Soporta PDF · Hasta 50 MB
                   </p>
                 </div>
               </div>
@@ -220,7 +220,7 @@ function App() {
             {/* Depth */}
             <div style={{ flex: 1, minWidth: 200 }}>
               <label htmlFor="depth-select" style={{ display: "block", fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#a3a3a3", marginBottom: "0.45rem" }}>
-                Analysis Depth
+                Profundidad del análisis
               </label>
               <select
                 id="depth-select"
@@ -228,9 +228,9 @@ function App() {
                 onChange={(e) => setDepth(e.target.value)}
                 className="select-bw"
               >
-                <option value="Short (1 paragraph)">Short — 1 paragraph</option>
-                <option value="Medium (2-3 paragraphs)">Medium — 2–3 paragraphs</option>
-                <option value="Detailed (4-6 paragraphs)">Detailed — 4–6 paragraphs</option>
+                <option value="Short (1 paragraph)">Corto — 1 párrafo </option>
+                <option value="Medium (2-3 paragraphs)">Medio — 2–3 párrafos</option>
+                <option value="Detailed (4-6 paragraphs)">Detallado — 4–6 párrafos</option>
               </select>
             </div>
 
@@ -250,7 +250,7 @@ function App() {
                 ) : (
                   <>
                     <Icon path={P.zap} size={14} stroke="#ffffff" />
-                    Analyze Document
+                    Analizar Documento
                   </>
                 )}
               </button>
@@ -279,7 +279,7 @@ function App() {
               marginBottom: "1.5rem",
             }}>
               <p style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#a3a3a3", marginBottom: "0.5rem" }}>
-                Document
+                Documento Analizado
               </p>
               <h2 style={{ fontSize: "clamp(1.3rem, 3vw, 1.9rem)", fontWeight: 900, letterSpacing: "-0.02em", color: "#0a0a0a", lineHeight: 1.2, marginBottom: "0.6rem" }}>
                 {analysis.document_title}
@@ -293,7 +293,7 @@ function App() {
             </div>
 
             {/* ── Summary ── */}
-            <Section iconPath={P.book} title="Summary" delay="2">
+            <Section iconPath={P.book} title="Resumen" delay="2">
               <p style={{ fontSize: "0.92rem", color: "#404040", lineHeight: 1.8 }}>{analysis.summary}</p>
             </Section>
 
@@ -302,7 +302,7 @@ function App() {
             {/* ── 2-col grid ── */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "1rem", marginBottom: "1rem" }}>
 
-              <Section iconPath={P.target} title="Main Objectives" delay="3">
+              <Section iconPath={P.target} title="Objetivos Principales" delay="3">
                 {analysis.main_objectives?.map((obj, i) => (
                   <div key={i} className="result-row">
                     <span className="num">{i + 1}</span>
@@ -311,7 +311,7 @@ function App() {
                 ))}
               </Section>
 
-              <Section iconPath={P.bulb} title="Main Ideas" delay="4">
+              <Section iconPath={P.bulb} title="Ideas Principales" delay="4">
                 {analysis.main_ideas?.map((idea, i) => (
                   <div key={i} className="result-row">
                     <span className="num">{i + 1}</span>
@@ -322,7 +322,7 @@ function App() {
             </div>
 
             {/* ── Key Points ── */}
-            <Section iconPath={P.key} title="Key Points" delay="5">
+            <Section iconPath={P.key} title="Puntos Clave" delay="5">
               <div style={{ columns: "2 280px", columnGap: "1.5rem" }}>
                 {analysis.key_points?.map((kp, i) => (
                   <div key={i} className="result-row" style={{ breakInside: "avoid" }}>
@@ -336,7 +336,7 @@ function App() {
             <div style={{ height: "1rem" }} />
 
             {/* ── Insights ── */}
-            <Section iconPath={P.eye} title="Insights" delay="6">
+            <Section iconPath={P.eye} title="Perspectivas" delay="6">
               {analysis.insights?.map((ins, i) => (
                 <div key={i} className="result-row">
                   <span className="num">{i + 1}</span>
@@ -393,7 +393,7 @@ function App() {
         color: "#d4d4d4",
         letterSpacing: "0.04em",
       }}>
-        READSY · AI ACADEMIC ANALYZER
+        READSY - ANALIZADOR ACADÉMICO CON IA
       </footer>
     </div>
   );

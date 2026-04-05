@@ -2,6 +2,7 @@
 
 from fastapi import APIRouter, UploadFile, File, Form
 from app.services.pdf_processor import extract_text_from_pdf
+from app.services.pdf_processor import extract_pdf_title
 from app.services.academic_evaluator import evaluate_document
 from app.schemas.analysis_schema import AcademicAnalysisSchema
 
@@ -16,6 +17,7 @@ async def analyze_document(
     
     file_bytes = await pdf.read()
     extracted_text = extract_text_from_pdf(file_bytes)
+    
 
     if extracted_text.startswith("Error"):
         return AcademicAnalysisSchema(
@@ -29,7 +31,9 @@ async def analyze_document(
             questions=[] 
         )
     
-    analysis = evaluate_document(extracted_text, depth, questions)
+
+    title = extract_pdf_title(file_bytes, extracted_text)
+    analysis = evaluate_document(extracted_text, depth, questions, title)
 
     return AcademicAnalysisSchema(
     document_title=analysis.document_title,
