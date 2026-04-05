@@ -49,11 +49,13 @@ def evaluate_document(text: str, depth: str, num_questions: int, pdf_title: str)
         "main_ideas": ["...", "..."],
         "key_points": ["...", "..."],
         "insights": ["...", "..."],
+        "conclusions": "...",
+        "authors": ["...", "..."],
         "questions": [
             {{
                 "number": 1,
-                "q_type": "comprehension",
-                "difficulty": "medium",
+                "q_type": "...",
+                "difficulty": "...",
                 "question": "...",
                 "suggested_answer": "..."
             }}
