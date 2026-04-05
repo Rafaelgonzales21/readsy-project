@@ -348,20 +348,20 @@ function App() {
             <div style={{ height: "1rem" }} />
 
             {/* ── Conclusions ── */}
-            <Section iconPath={P.conclude} title="Conclusions" delay="7">
+            <Section iconPath={P.conclude} title="Conclusiones" delay="7">
               <p style={{ fontSize: "0.92rem", color: "#404040", lineHeight: 1.8 }}>{analysis.conclusions}</p>
             </Section>
 
             <div style={{ height: "1rem" }} />
 
             {/* ── Questions ── */}
-            <Section iconPath={P.help} title="Generated Questions" delay="8">
+            <Section iconPath={P.help} title="Preguntas Generadas" delay="8">
               <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "0.25rem" }}>
                 {analysis.questions?.map((q, idx) => (
                   <div key={q.number} className="q-card" style={{ animationDelay: `${0.05 * idx}s` }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.6rem", flexWrap: "wrap" }}>
                       <span style={{ fontWeight: 800, fontSize: "0.78rem", color: "#0a0a0a", letterSpacing: "0.04em" }}>
-                        Q{q.number}
+                        P{q.number}
                       </span>
                       <span className="badge badge-outline">{q.q_type}</span>
                       <span className={diffBadge[q.difficulty] ?? "badge badge-outline"}>
