@@ -372,7 +372,7 @@ function App() {
                       {q.question}
                     </p>
                     <p style={{ fontSize: "0.82rem", color: "#737373", lineHeight: 1.6 }}>
-                      <span style={{ fontWeight: 700, color: "#a3a3a3", marginRight: "0.25rem" }}>Answer:</span>
+                      <span style={{ fontWeight: 700, color: "#a3a3a3", marginRight: "0.25rem" }}>Respuesta sugerida:</span>
                       {q.suggested_answer}
                     </p>
                   </div>
