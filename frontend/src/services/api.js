@@ -2,6 +2,13 @@
 
 import axios from "axios";
 
-export const api = axios.create({
-    baseURL: "http://localhost:8000/api",
-});
+export const analyzePDF = (file, depth) => {
+  const formData = new FormData();
+  formData.append("pdf", file);
+  formData.append("depth", String(depth));
+  formData.append("questions", String(5));
+
+  return axios.post("http://localhost:8000/api/analyze", formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+};
