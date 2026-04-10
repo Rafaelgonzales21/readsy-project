@@ -80,13 +80,56 @@ GROQ_API_KEY=your_groq_api_key_here
 
 ```bash
 readsy/
-├── backend/
-│   ├── app/
-│   ├── .env
-│   ├── .env.example
-│   └── requirements.txt
 │
-├── frontend/
+├── src/
+│   ├── assets/
+│   │   ├── hero.png
+│   │   ├── react.svg
+│   │   ├── robotai.png
+│   │   └── vite.svg
+│   │
+│   ├── components/
+│   │   ├── Icons/
+│   │   │   ├── Icon.jsx
+│   │   │   └── iconPaths.jsx
+│   │   │
+│   │   ├── Navbar/
+│   │   │   └── Navbar.jsx
+│   │   │
+│   │   ├── Results/
+│   │   │   ├── Conclusions.jsx
+│   │   │   ├── DocHeader.jsx
+│   │   │   ├── Ideas.jsx
+│   │   │   ├── Insights.jsx
+│   │   │   ├── KeyPoints.jsx
+│   │   │   ├── Objectives.jsx
+│   │   │   ├── Questions.jsx
+│   │   │   ├── Results.jsx
+│   │   │   └── Summary.jsx
+│   │   │
+│   │   ├── Sections/
+│   │   │   ├── Section.jsx
+│   │   │   └── Skeleton.jsx
+│   │   │
+│   │   └── Upload/
+│   │       ├── FileInfo.jsx
+│   │       └── UploadZone.jsx
+│   │
+│   ├── pages/
+│   │   └── Home.jsx
+│   │
+│   ├── services/
+│   │   └── api.js
+│   │
+│   ├── App.jsx
+│   ├── main.jsx
+│   └── index.css
+│
+├── package.json
+├── package-lock.json
+├── vite.config.js
+├── tailwind.config.js
+├── postcss.config.js
 └── README.md
 ```
 ---
