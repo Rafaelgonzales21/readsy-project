@@ -9,7 +9,7 @@ Subís un paper y obtenés automáticamente resumen, ideas clave, insights, preg
 
 ```bash
 # 1. Clonar
-git clone https://github.com/tu-usuario/readsy.git
+https://github.com/Rafaelgonzales21/readsy-project.git
 cd readsy
 
 # ======================
