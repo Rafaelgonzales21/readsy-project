@@ -276,3 +276,57 @@ body {
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--gray-200);
 }
+
+/* ── Depth Selector ─────────────────────────────────────── */
+.depth-container {
+  margin-bottom: 1.5rem;
+}
+
+.depth-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 0.75rem;
+}
+
+.depth-selector {
+  display: flex;
+  background: var(--gray-100);
+  padding: 4px;
+  border-radius: 10px;
+  gap: 4px;
+}
+
+.depth-option {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.6rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--gray-500);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.depth-option:hover {
+  color: var(--gray-900);
+}
+
+.depth-option.active {
+  background: var(--white);
+  color: #000000; /* Deep blue as seen in image */
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.depth-description {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  color: #94a3b8;
+  line-height: 1.5;
+}
