@@ -1,103 +1,159 @@
-﻿# 📚 Readsy – Academic Analyzer
+# 📚 Readsy - Academic Analyzer
 
-Aplicación fullstack para analizar documentos PDF con IA (Groq).
-Subís un paper y obtenés automáticamente resumen, ideas clave, insights, preguntas y conclusiones.
+Readsy is a web application that analyzes academic documents (such as PDFs) to extract information, evaluate them, and make them easier to understand using automated tools.
 
 ---
 
-## 🚀 Quick Start 
+## 🚀 Technologies Used
+
+### Frontend
+
+* React
+* Vite
+* TailwindCSS
+* Axios
+
+### Backend
+
+* FastAPI (Python)
+* Uvicorn
+* PDF processing
+
+---
+
+## 📁 Project structure
+
+```
+readsy/
+│
+├── frontend/          # React application (client)
+│
+├── backend/           # API with FastAPI
+│   └── app/
+│       ├── main.py    # Entry point
+│       ├── api/
+│       ├── models/
+│       ├── schemas/
+│       └── services/
+│
+└── README.md
+```
+
+---
+
+## ⚙️ Installation and Execution
+
+### 1. Clone the repository
 
 ```bash
-# 1. Clonar
-https://github.com/Rafaelgonzales21/readsy-project.git
+git clone https://github.com/Rafaelgonzales21/readsy-project.git
 cd readsy
+```
 
-# ======================
-# BACKEND
-# ======================
+---
+
+## 🖥️ Backend (FastAPI + Uvicorn)
+
+### 2. Create a virtual environment
+
+```bash
 cd backend
-
-# Crear entorno virtual (recomendado)
 python -m venv venv
+source venv/bin/activate  # Linux / Mac
+venv\Scripts\activate     # Windows
+```
 
-# Activar entorno
-# Mac / Linux
-source venv/bin/activate
-# Windows
-venv\Scripts\activate
+---
 
-# Instalar dependencias
+### 3. Install dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-# Crear variables de entorno
+---
+
+### 4. Configure environment variables
+
+Copy the example file and edit it:
+
+```bash
 cp .env.example .env
+```
 
-# Ejecutar API
-uvicorn app.main:app --reload --port 3000
+Then fill in the necessary values in `.env`:
 
-# ======================
-# FRONTEND (nueva terminal)
-# ======================
+```env
+GROQ_API_KEY=your_groq_api_key
+```
+
+---
+
+### 5. Run the server
+
+```bash
+uvicorn app.main:app --reload
+```
+
+📍 Backend available at:
+http://localhost:8000
+
+📍 Automatic documentation (Swagger):
+http://localhost:8000/docs
+
+---
+
+## 🌐 Frontend (React + Vite)
+
+### 6. Install dependencies and run
+
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-👉 Frontend: [http://localhost:5173](http://localhost:5173)
-👉 Backend: [http://localhost:3000](http://localhost:3000)
-👉 Docs API: [http://localhost:3000/docs](http://localhost:3000/docs)
+📍 Frontend available at:
+http://localhost:5173
 
 ---
 
-## 🔐 Variables de entorno
+## 🔗 Frontend-Backend Communication
 
-Archivo: `backend/.env`
+The frontend consumes the API at:
 
-```env
-GROQ_API_KEY=tu_api_key_de_groq
+```
+http://localhost:8000
 ```
 
-Archivo: `backend/.env.example`
+Make sure CORS is enabled in FastAPI.
 
-```env
-GROQ_API_KEY=your_groq_api_key_here
+---
+
+## ✨ Key Features
+
+* 📄 PDF file upload and analysis
+* 🧠 Academic content processing
+* ⚡ Fast and modern interface
+
+---
+
+## 🛠️ Available Scripts (Frontend)
+
+```bash
+npm run dev      # Development
+npm run build    # Production
+npm run preview  # Preview the build
 ```
 
 ---
 
-## 🧠 Cómo funciona
+## 🤝 Contributions
 
-```text
-1. Subís un PDF desde el frontend
-2. FastAPI recibe el archivo
-3. Se extrae el texto
-4. Se envía a Groq (LLM)
-5. Se devuelve análisis estructurado
-```
----
-
-## 💡 Recomendación importante
-
-Si no estás usando ambos:
-
-* `PyPDF2`
-* `pdfplumber`
-
-podés dejar solo uno para evitar peso innecesario.
+Contributions are welcome. Fork the project and open a pull request 🚀
 
 ---
-
-## 🔮 Mejoras futuras
-
-* Auth (JWT)
-* Guardado de documentos
-* Historial
-* Mejor parsing de IA
-* Streaming responses
-
----
-
-## 👨‍💻 Autor
+  
+## Author
 
 Rafael Gonzales Palacios
-
