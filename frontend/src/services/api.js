@@ -1,6 +1,6 @@
-// Cliente Axios para conectar con FastAPI
-
 import axios from "axios";
+
+const API = import.meta.env.VITE_API_URL;
 
 export const analyzePDF = (file, depth) => {
   const formData = new FormData();
@@ -8,7 +8,7 @@ export const analyzePDF = (file, depth) => {
   formData.append("depth", String(depth));
   formData.append("questions", String(5));
 
-  return axios.post("http://localhost:8000/api/analyze", formData, {
+  return axios.post(`${API}/api/analyze`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
