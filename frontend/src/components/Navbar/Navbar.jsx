@@ -1,7 +1,10 @@
 import Icon from "../Icons/Icon"
 import { P } from "../Icons/iconPaths"
+import { useAuth } from "../../services/AuthContext"
 
 export default function Navbar() {
+  const { user, logout } = useAuth();
+
   return (
     <nav className="navbar">
       <div style={{
@@ -44,6 +47,43 @@ export default function Navbar() {
         }}>
           Analizador Académico
         </span>
+
+        {user && (
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <span style={{
+              fontSize: "0.8rem",
+              color: "#404040",
+              fontWeight: 500,
+            }}>
+              {user.email}
+            </span>
+            <button
+              onClick={logout}
+              style={{
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                color: "#737373",
+                background: "none",
+                border: "1px solid #e5e5e5",
+                borderRadius: 6,
+                padding: "0.35rem 0.75rem",
+                cursor: "pointer",
+                letterSpacing: "0.02em",
+                transition: "all 0.15s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.color = "#0a0a0a";
+                e.target.style.borderColor = "#0a0a0a";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.color = "#737373";
+                e.target.style.borderColor = "#e5e5e5";
+              }}
+            >
+              Cerrar sesión
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );
