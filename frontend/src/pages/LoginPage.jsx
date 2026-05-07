@@ -24,8 +24,8 @@ export default function LoginPage() {
     setLoading(true);
  
     try {
-      const { data: tokenData } = await api.post("/auth/login", form);
-      const { data: userData } = await api.get("/auth/me", {
+      const { data: tokenData } = await api.post("/api/auth/login", form);
+      const { data: userData } = await api.get("/api/auth/me", {
         headers: { Authorization: `Bearer ${tokenData.access_token}` },
       });
       login(tokenData.access_token, userData);
@@ -169,4 +169,4 @@ export default function LoginPage() {
       </footer>
     </div>
   );
-}
+}

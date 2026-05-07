@@ -37,12 +37,12 @@ export default function RegisterPage() {
         setLoading(true);
 
         try {
-            const { data: tokenData } = await api.post("/auth/register", {
+            const { data: tokenData } = await api.post("/api/auth/register", {
                 email: form.email,
                 password: form.password,
             });
 
-            const { data: userData } = await api.get("/auth/me", {
+            const { data: userData } = await api.get("/api/auth/me", {
                 headers: { Authorization: `Bearer ${tokenData.access_token}` },
             });
 
@@ -212,4 +212,4 @@ export default function RegisterPage() {
             </footer>
         </div>
     );
-}
+}
