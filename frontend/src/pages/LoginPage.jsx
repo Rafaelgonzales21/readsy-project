@@ -22,20 +22,22 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
     setLoading(true);
- 
+
     try {
       const { data: tokenData } = await api.post("/api/auth/login", form);
-      const { data: userData } = await api.get("/api/auth/me", {
-        headers: { Authorization: `Bearer ${tokenData.access_token}` },
-      });
+      
+      localStorage.setItem("readsy_token", tokenData.access_token);
+      
+      const { data: userData } = await api.get("/api/auth/me");
+      
       login(tokenData.access_token, userData);
-      navigate("/dashboard");
+      navigate("/");
     } catch (err) {
-      setError(err.response?.data?.detail || "Error al iniciar sesión");
+      setError(err.response?.data?.detail || "No autorizado");
     } finally {
       setLoading(false);
     }
-  };
+};
 
   return (
     <div style={{ minHeight: "100vh", background: "#ffffff" }}>
