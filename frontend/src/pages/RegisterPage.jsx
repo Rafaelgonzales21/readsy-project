@@ -42,12 +42,13 @@ export default function RegisterPage() {
                 password: form.password,
             });
 
-            const { data: userData } = await api.get("/api/auth/me", {
-                headers: { Authorization: `Bearer ${tokenData.access_token}` },
-            });
+            // se guarda el token antes de llamar a /me para que el interceptor lo envíe
+            localStorage.setItem("readsy_token", tokenData.access_token);
+
+            const { data: userData } = await api.get("/api/auth/me");
 
             login(tokenData.access_token, userData);
-            navigate("/dashboard");
+            navigate("/");
         } catch (err) {
             setError(err.response?.data?.detail || "Error al crear la cuenta");
         } finally {
@@ -98,15 +99,7 @@ export default function RegisterPage() {
                                 placeholder="tu@email.com"
                                 required
                                 autoComplete="email"
-                                style={{
-                                    padding: "0.75rem 1rem",
-                                    border: "1px solid #e5e5e5",
-                                    borderRadius: 6,
-                                    fontSize: "0.95rem",
-                                    fontFamily: "inherit",
-                                    outline: "none",
-                                    transition: "border-color 0.2s ease"
-                                }}
+                                style={{ padding: "0.75rem 1rem", border: "1px solid #e5e5e5", borderRadius: 6, fontSize: "0.95rem", fontFamily: "inherit", outline: "none", transition: "border-color 0.2s ease" }}
                                 onFocus={(e) => e.target.style.borderColor = "#0a0a0a"}
                                 onBlur={(e) => e.target.style.borderColor = "#e5e5e5"}
                             />
@@ -123,15 +116,7 @@ export default function RegisterPage() {
                                 placeholder="Mínimo 8 caracteres"
                                 required
                                 autoComplete="new-password"
-                                style={{
-                                    padding: "0.75rem 1rem",
-                                    border: "1px solid #e5e5e5",
-                                    borderRadius: 6,
-                                    fontSize: "0.95rem",
-                                    fontFamily: "inherit",
-                                    outline: "none",
-                                    transition: "border-color 0.2s ease"
-                                }}
+                                style={{ padding: "0.75rem 1rem", border: "1px solid #e5e5e5", borderRadius: 6, fontSize: "0.95rem", fontFamily: "inherit", outline: "none", transition: "border-color 0.2s ease" }}
                                 onFocus={(e) => e.target.style.borderColor = "#0a0a0a"}
                                 onBlur={(e) => e.target.style.borderColor = "#e5e5e5"}
                             />
@@ -148,45 +133,23 @@ export default function RegisterPage() {
                                 placeholder="Repite la contraseña"
                                 required
                                 autoComplete="new-password"
-                                style={{
-                                    padding: "0.75rem 1rem",
-                                    border: "1px solid #e5e5e5",
-                                    borderRadius: 6,
-                                    fontSize: "0.95rem",
-                                    fontFamily: "inherit",
-                                    outline: "none",
-                                    transition: "border-color 0.2s ease"
-                                }}
+                                style={{ padding: "0.75rem 1rem", border: "1px solid #e5e5e5", borderRadius: 6, fontSize: "0.95rem", fontFamily: "inherit", outline: "none", transition: "border-color 0.2s ease" }}
                                 onFocus={(e) => e.target.style.borderColor = "#0a0a0a"}
                                 onBlur={(e) => e.target.style.borderColor = "#e5e5e5"}
                             />
                         </div>
 
                         {error && (
-                            <p style={{ 
-                                fontSize: "0.85rem", 
-                                color: "#e11d48", 
-                                background: "#fff1f2", 
-                                padding: "0.75rem", 
-                                borderRadius: 4, 
-                                border: "1px solid #fecdd3" 
-                            }}>
+                            <p style={{ fontSize: "0.85rem", color: "#e11d48", background: "#fff1f2", padding: "0.75rem", borderRadius: 4, border: "1px solid #fecdd3" }}>
                                 {error}
                             </p>
                         )}
 
                         <button type="submit" className="btn-black" disabled={loading} style={{ width: "100%", padding: "0.85rem", borderRadius: 6, marginTop: "0.5rem" }}>
                             {loading ? (
-                                <span className="ld">
-                                    <span />
-                                    <span />
-                                    <span />
-                                </span>
+                                <span className="ld"><span /><span /><span /></span>
                             ) : (
-                                <>
-                                    <Icon path={P.zap} size={14} stroke="#ffffff" />
-                                    Crear cuenta
-                                </>
+                                <><Icon path={P.zap} size={14} stroke="#ffffff" />Crear cuenta</>
                             )}
                         </button>
                     </form>
@@ -197,17 +160,7 @@ export default function RegisterPage() {
                     </p>
                 </div>
             </main>
-            <footer
-                style={{
-                    borderTop: "1px solid #f2f2f2",
-                    padding: "2rem",
-                    textAlign: "center",
-                    fontSize: "0.75rem",
-                    color: "#d4d4d4",
-                    letterSpacing: "0.04em",
-                    marginTop: "auto"
-                }}
-            >
+            <footer style={{ borderTop: "1px solid #f2f2f2", padding: "2rem", textAlign: "center", fontSize: "0.75rem", color: "#d4d4d4", letterSpacing: "0.04em", marginTop: "auto" }}>
                 READSY - ANALIZADOR ACADÉMICO CON IA
             </footer>
         </div>
