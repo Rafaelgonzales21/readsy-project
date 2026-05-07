@@ -5,28 +5,33 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-})
+});
 
-/*para añadir el token jwt automaticamente */
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("readsy_token");
-  if (token){
-    config.headers.Authorization = `Bearer ${token}`
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
 
-/* Si el back devuelve 401, hace que borre el token y redirige al login */
+// ← Eliminamos la redirección automática al 401
+// porque interfiere con el flujo de registro/login
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if(error.response?.status === 401){
-      localStorage.removeItem("readsy_token");
-      window.location.href = "/login";
+    if (error.response?.status === 401) {
+      const isAuthRoute =
+        window.location.pathname === "/login" ||
+        window.location.pathname === "/register";
+      if (!isAuthRoute) {
+        localStorage.removeItem("readsy_token");
+        window.location.href = "/login";
+      }
     }
     return Promise.reject(error);
   }
-)
+);
 
 export const analyzePDF = (file, depth) => {
   const formData = new FormData();
@@ -34,10 +39,9 @@ export const analyzePDF = (file, depth) => {
   formData.append("depth", String(depth));
   formData.append("questions", String(5));
 
-  return axios.post(`${API}/api/analyze`, formData, {
+  return api.post("/api/analyze", formData, { 
     headers: { "Content-Type": "multipart/form-data" },
   });
 };
-
 
 export default api;
