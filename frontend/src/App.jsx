@@ -6,6 +6,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import HistoryPage from "./pages/HistoryPage";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           {/* Protegidas — requieren login */}
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<Home />} />
+            <Route path="/history" element={<HistoryPage/>} />
           </Route>
 
           {/* Cualquier ruta desconocida → home */}

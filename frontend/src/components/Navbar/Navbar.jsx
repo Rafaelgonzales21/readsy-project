@@ -1,9 +1,11 @@
+import { Link, useLocation } from "react-router-dom";
 import Icon from "../Icons/Icon"
 import { P } from "../Icons/iconPaths"
 import { useAuth } from "../../services/AuthContext"
 
 export default function Navbar() {
   const { user, logout } = useAuth();
+  const location = useLocation();
 
   return (
     <nav className="navbar">
@@ -38,15 +40,54 @@ export default function Navbar() {
           </span>
         </div>
 
-        <span style={{
-          fontSize: "0.75rem",
-          color: "#737373",
-          fontWeight: 500,
-          letterSpacing: "0.04em",
-          textTransform: "uppercase"
-        }}>
-          Analizador Académico
-        </span>
+        {/* Enlaces de navegación — solo cuando hay sesión */}
+        {user && (
+          <div style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
+            <Link
+              to="/"
+              style={{
+                fontSize: "0.82rem",
+                fontWeight: 600,
+                padding: "0.35rem 0.75rem",
+                borderRadius: 6,
+                textDecoration: "none",
+                color: location.pathname === "/" ? "#0a0a0a" : "#737373",
+                background: location.pathname === "/" ? "#f5f5f5" : "transparent",
+                transition: "all 0.15s",
+              }}
+            >
+              Analizar
+            </Link>
+            <Link
+              to="/history"
+              style={{
+                fontSize: "0.82rem",
+                fontWeight: 600,
+                padding: "0.35rem 0.75rem",
+                borderRadius: 6,
+                textDecoration: "none",
+                color: location.pathname === "/history" ? "#0a0a0a" : "#737373",
+                background: location.pathname === "/history" ? "#f5f5f5" : "transparent",
+                transition: "all 0.15s",
+              }}
+            >
+              Historial
+            </Link>
+          </div>
+        )}
+
+        {/* Sin sesión muestra el texto original */}
+        {!user && (
+          <span style={{
+            fontSize: "0.75rem",
+            color: "#737373",
+            fontWeight: 500,
+            letterSpacing: "0.04em",
+            textTransform: "uppercase"
+          }}>
+            Analizador Académico
+          </span>
+        )}
 
         {user && (
           <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
