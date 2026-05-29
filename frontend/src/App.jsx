@@ -8,6 +8,8 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HistoryPage from "./pages/HistoryPage";
 import DashboardPage from "./pages/Dashboard";
+import ProfilePage from "./pages/ProfilePage";
+
 
 function App() {
   return (
@@ -23,6 +25,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/history" element={<HistoryPage/>} />
             <Route path="/dashboard" element={<DashboardPage/>}/>
+            <Route path="/profile" element={<ProfilePage />} />
           </Route>
 
           {/* Cualquier ruta desconocida → home */}

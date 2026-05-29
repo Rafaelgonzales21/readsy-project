@@ -72,9 +72,18 @@ export default function Navbar() {
                 {/* Usuario + logout */}
                 {user && (
                     <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                        <span style={{ fontSize: "0.8rem", color: "#404040", fontWeight: 500 }}>
+                        <Link
+                            to="/profile"
+                            style={{
+                                fontSize: "0.8rem", color: "#404040", fontWeight: 500,
+                                textDecoration: "none", borderBottom: "1px solid transparent",
+                                transition: "border-color 0.15s",
+                            }}
+                            onMouseEnter={(e) => e.target.style.borderBottomColor = "#404040"}
+                            onMouseLeave={(e) => e.target.style.borderBottomColor = "transparent"}
+                        >
                             {user.email}
-                        </span>
+                        </Link>
                         <button
                             onClick={logout}
                             style={{
