@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import HistoryPage from "./pages/HistoryPage";
+import DashboardPage from "./pages/Dashboard";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route element={<PrivateRoute />}>
             <Route path="/" element={<Home />} />
             <Route path="/history" element={<HistoryPage/>} />
+            <Route path="/dashboard" element={<DashboardPage/>}/>
           </Route>
 
           {/* Cualquier ruta desconocida → home */}
