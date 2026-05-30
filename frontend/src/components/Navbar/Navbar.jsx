@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import Icon from "../Icons/Icon";
 import { P } from "../Icons/iconPaths";
 import { useAuth } from "../../services/AuthContext";
+import NotificationBell from "./NotificationBell";   // ← NUEVO
 
 export default function Navbar() {
     const { user, logout } = useAuth();
@@ -71,7 +72,8 @@ export default function Navbar() {
 
                 {/* Usuario + logout */}
                 {user && (
-                    <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                        <NotificationBell />   {/* ← NUEVO */}
                         <Link
                             to="/profile"
                             style={{
