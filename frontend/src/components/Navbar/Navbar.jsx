@@ -39,12 +39,8 @@ export default function Navbar() {
             }}>
                 {/* Logo */}
                 <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                    <div style={{
-                        width: 28, height: 28,
-                        background: "#0a0a0a", borderRadius: 6,
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                    }}>
-                        <Icon path={P.book} size={15} stroke="#fff" />
+                    <div >
+                        <img src="/readsy-logo.png" alt="readsy logo" style={{width:55}}/>
                     </div>
                     <span style={{ fontWeight: 800, fontSize: "1rem", letterSpacing: "-0.02em", color: "#0a0a0a" }}>
                         Readsy
