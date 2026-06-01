@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar/Navbar";
@@ -8,6 +7,7 @@ export default function HistoryPage() {
     const [analyses, setAnalyses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);
+    const [search, setSearch] = useState("");           // ← NUEVO
 
     // Chat
     const [messages, setMessages] = useState([]);
@@ -24,12 +24,22 @@ export default function HistoryPage() {
             .finally(() => setLoading(false));
     }, []);
 
-    // Scroll automático al último mensaje del chat
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages]);
 
-    // para seleccionar y deseleccionar un análisis
+    // ── Filtrado por búsqueda ──────────────────────────────────────────────────
+    const filtered = analyses.filter((a) => {
+        if (!search.trim()) return true;
+        const q = search.toLowerCase();
+        const result = parseResult(a.result);
+        return (
+            a.filename?.toLowerCase().includes(q) ||
+            result?.document_title?.toLowerCase().includes(q) ||
+            a.content?.toLowerCase().includes(q)
+        );
+    });
+
     const handleSelect = (a) => {
         if (selected?.id === a.id) {
             setSelected(null);
@@ -39,7 +49,6 @@ export default function HistoryPage() {
             setMessages([]);
         }
     };
-
 
     const handleDelete = async (id) => {
         try {
@@ -53,10 +62,7 @@ export default function HistoryPage() {
 
     const handleExport = async (id, filename) => {
         try {
-            // responseType blob para recibir el binario del PDF
-            const res = await api.get(`/api/analyses/${id}/export`, {
-                responseType: "blob",
-            });
+            const res = await api.get(`/api/analyses/${id}/export`, { responseType: "blob" });
             const url = window.URL.createObjectURL(new Blob([res.data], { type: "application/pdf" }));
             const link = document.createElement("a");
             link.href = url;
@@ -75,9 +81,7 @@ export default function HistoryPage() {
         setQuestion("");
         setChatLoading(true);
         try {
-            const res = await api.post(`/api/analyses/${selected.id}/chat`, {
-                question: userMsg.text,
-            });
+            const res = await api.post(`/api/analyses/${selected.id}/chat`, { question: userMsg.text });
             setMessages((prev) => [...prev, { role: "assistant", text: res.data.answer }]);
         } catch {
             setMessages((prev) => [...prev, { role: "assistant", text: "Error al obtener respuesta." }]);
@@ -91,22 +95,21 @@ export default function HistoryPage() {
         hour: "2-digit", minute: "2-digit",
     });
 
-    const parseResult = (result) => {
+    function parseResult(result) {
         try { return JSON.parse(result); } catch { return null; }
-    };
+    }
 
     return (
         <div style={{ minHeight: "100vh", background: "#ffffff" }}>
             <Navbar />
             <main style={{ maxWidth: 860, margin: "0 auto", padding: "4rem 1.5rem 6rem" }}>
 
-                <header className="fade-up" style={{ marginBottom: "3rem" }}>
+                {/* Cabecera */}
+                <header className="fade-up" style={{ marginBottom: "2rem" }}>
                     <h1 className="display-font" style={{
                         fontSize: "clamp(2rem, 5vw, 3.5rem)",
-                        fontWeight: 900,
-                        letterSpacing: "-0.03em",
-                        color: "#0a0a0a",
-                        marginBottom: "0.5rem",
+                        fontWeight: 900, letterSpacing: "-0.03em",
+                        color: "#0a0a0a", marginBottom: "0.5rem",
                     }}>
                         Tu historial
                     </h1>
@@ -114,6 +117,65 @@ export default function HistoryPage() {
                         {analyses.length} {analyses.length === 1 ? "documento analizado" : "documentos analizados"}
                     </p>
                 </header>
+
+                {/* ── BUSCADOR ── */}
+                {!loading && analyses.length > 0 && (
+                    <div style={{ marginBottom: "1.5rem", position: "relative" }}>
+                        {/* Icono lupa */}
+                        <svg
+                            width="16" height="16" viewBox="0 0 24 24"
+                            fill="none" stroke="#737373" strokeWidth="2"
+                            strokeLinecap="round" strokeLinejoin="round"
+                            style={{ position: "absolute", left: "0.875rem", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}
+                        >
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        <input
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            placeholder="Buscar por título, nombre de archivo o contenido..."
+                            style={{
+                                width: "100%",
+                                padding: "0.75rem 1rem 0.75rem 2.5rem",
+                                border: "1px solid #e5e5e5",
+                                borderRadius: 10,
+                                fontSize: "0.92rem",
+                                fontFamily: "inherit",
+                                outline: "none",
+                                boxSizing: "border-box",
+                                transition: "border-color 0.15s",
+                                background: "#fafaf8",
+                            }}
+                            onFocus={(e) => e.target.style.borderColor = "#0a0a0a"}
+                            onBlur={(e) => e.target.style.borderColor = "#e5e5e5"}
+                        />
+                        {/* Botón limpiar búsqueda */}
+                        {search && (
+                            <button
+                                onClick={() => setSearch("")}
+                                style={{
+                                    position: "absolute", right: "0.875rem", top: "50%",
+                                    transform: "translateY(-50%)",
+                                    background: "none", border: "none",
+                                    color: "#737373", cursor: "pointer",
+                                    fontSize: "1.1rem", lineHeight: 1, padding: 0,
+                                }}
+                            >
+                                ×
+                            </button>
+                        )}
+                    </div>
+                )}
+
+                {/* Resultado de la búsqueda */}
+                {search && (
+                    <p style={{ fontSize: "0.82rem", color: "#737373", marginBottom: "1rem" }}>
+                        {filtered.length === 0
+                            ? "Sin resultados para tu búsqueda"
+                            : `${filtered.length} resultado${filtered.length !== 1 ? "s" : ""} para "${search}"`}
+                    </p>
+                )}
 
                 {loading && (
                     <div style={{ color: "#737373", textAlign: "center", padding: "4rem" }}>
@@ -133,16 +195,29 @@ export default function HistoryPage() {
                     </div>
                 )}
 
-                {!loading && analyses.length > 0 && (
+                {!loading && analyses.length > 0 && filtered.length === 0 && (
+                    <div className="card" style={{ padding: "2rem", textAlign: "center" }}>
+                        <p style={{ color: "#737373" }}>
+                            No se encontraron análisis que coincidan con "{search}".
+                        </p>
+                        <button
+                            onClick={() => setSearch("")}
+                            style={{ marginTop: "1rem", fontSize: "0.85rem", color: "#0a0a0a", background: "none", border: "none", cursor: "pointer", fontWeight: 600, textDecoration: "underline" }}
+                        >
+                            Limpiar búsqueda
+                        </button>
+                    </div>
+                )}
+
+                {/* Lista de análisis filtrada */}
+                {!loading && filtered.length > 0 && (
                     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                        {analyses.map((a) => {
+                        {filtered.map((a) => {
                             const result = parseResult(a.result);
                             const isOpen = selected?.id === a.id;
 
                             return (
                                 <div key={a.id} className="card" style={{ padding: "1.5rem" }}>
-
-                                    {/* Cabecera */}
                                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem" }}>
                                         <div style={{ flex: 1 }}>
                                             <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#0a0a0a", marginBottom: "0.25rem" }}>
@@ -153,7 +228,6 @@ export default function HistoryPage() {
                                             </p>
                                         </div>
 
-                                        {/* Botones */}
                                         <div style={{ display: "flex", gap: "0.5rem", flexShrink: 0, flexWrap: "wrap" }}>
                                             <button onClick={() => handleSelect(a)} style={{
                                                 fontSize: "0.78rem", fontWeight: 600,
@@ -165,8 +239,6 @@ export default function HistoryPage() {
                                             }}>
                                                 {isOpen ? "Cerrar" : "Ver análisis"}
                                             </button>
-
-                                            {/* NUEVO — Exportar PDF */}
                                             <button onClick={() => handleExport(a.id, a.filename)} style={{
                                                 fontSize: "0.78rem", fontWeight: 600,
                                                 padding: "0.35rem 0.75rem", borderRadius: 6,
@@ -176,7 +248,6 @@ export default function HistoryPage() {
                                             }}>
                                                 Exportar PDF
                                             </button>
-
                                             <button onClick={() => handleDelete(a.id)} style={{
                                                 fontSize: "0.78rem", fontWeight: 600,
                                                 padding: "0.35rem 0.75rem", borderRadius: 6,
@@ -189,7 +260,6 @@ export default function HistoryPage() {
                                         </div>
                                     </div>
 
-                                    {/* Resumen */}
                                     {a.content && (
                                         <p style={{
                                             marginTop: "0.75rem", fontSize: "0.88rem",
@@ -203,10 +273,8 @@ export default function HistoryPage() {
                                         </p>
                                     )}
 
-                                    {/* Detalle expandido */}
                                     {isOpen && result && (
                                         <div style={{ marginTop: "1.5rem", borderTop: "1px solid #f2f2f2", paddingTop: "1.5rem" }}>
-
                                             {result.main_ideas?.length > 0 && (
                                                 <div style={{ marginBottom: "1.25rem" }}>
                                                     <p style={{ fontWeight: 700, fontSize: "0.82rem", letterSpacing: "0.06em", textTransform: "uppercase", color: "#737373", marginBottom: "0.5rem" }}>Ideas principales</p>
@@ -217,7 +285,6 @@ export default function HistoryPage() {
                                                     </ul>
                                                 </div>
                                             )}
-
                                             {result.key_points?.length > 0 && (
                                                 <div style={{ marginBottom: "1.25rem" }}>
                                                     <p style={{ fontWeight: 700, fontSize: "0.82rem", letterSpacing: "0.06em", textTransform: "uppercase", color: "#737373", marginBottom: "0.5rem" }}>Puntos clave</p>
@@ -228,7 +295,6 @@ export default function HistoryPage() {
                                                     </ul>
                                                 </div>
                                             )}
-
                                             {result.conclusions && (
                                                 <div style={{ marginBottom: "1.5rem" }}>
                                                     <p style={{ fontWeight: 700, fontSize: "0.82rem", letterSpacing: "0.06em", textTransform: "uppercase", color: "#737373", marginBottom: "0.5rem" }}>Conclusiones</p>
@@ -236,22 +302,13 @@ export default function HistoryPage() {
                                                 </div>
                                             )}
 
-                                            {/* NUEVO — Chat con el documento */}
+                                            {/* Chat */}
                                             <div style={{ borderTop: "1px solid #f2f2f2", paddingTop: "1.5rem" }}>
                                                 <p style={{ fontWeight: 700, fontSize: "0.82rem", letterSpacing: "0.06em", textTransform: "uppercase", color: "#737373", marginBottom: "1rem" }}>
                                                     Pregunta sobre este documento
                                                 </p>
-
-                                                {/* Historial de mensajes */}
                                                 {messages.length > 0 && (
-                                                    <div style={{
-                                                        maxHeight: 280,
-                                                        overflowY: "auto",
-                                                        marginBottom: "1rem",
-                                                        display: "flex",
-                                                        flexDirection: "column",
-                                                        gap: "0.75rem",
-                                                    }}>
+                                                    <div style={{ maxHeight: 280, overflowY: "auto", marginBottom: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                                                         {messages.map((m, i) => (
                                                             <div key={i} style={{
                                                                 alignSelf: m.role === "user" ? "flex-end" : "flex-start",
@@ -260,22 +317,17 @@ export default function HistoryPage() {
                                                                 color: m.role === "user" ? "#fff" : "#404040",
                                                                 padding: "0.6rem 0.9rem",
                                                                 borderRadius: m.role === "user" ? "12px 12px 2px 12px" : "12px 12px 12px 2px",
-                                                                fontSize: "0.875rem",
-                                                                lineHeight: 1.5,
+                                                                fontSize: "0.875rem", lineHeight: 1.5,
                                                             }}>
                                                                 {m.text}
                                                             </div>
                                                         ))}
                                                         {chatLoading && (
-                                                            <div style={{ alignSelf: "flex-start", color: "#737373", fontSize: "0.82rem" }}>
-                                                                Analizando...
-                                                            </div>
+                                                            <div style={{ alignSelf: "flex-start", color: "#737373", fontSize: "0.82rem" }}>Analizando...</div>
                                                         )}
                                                         <div ref={chatEndRef} />
                                                     </div>
                                                 )}
-
-                                                {/* Input de pregunta */}
                                                 <div style={{ display: "flex", gap: "0.5rem" }}>
                                                     <input
                                                         value={question}
@@ -283,15 +335,7 @@ export default function HistoryPage() {
                                                         onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && handleChat()}
                                                         placeholder="¿Qué quieres saber sobre este documento?"
                                                         disabled={chatLoading}
-                                                        style={{
-                                                            flex: 1,
-                                                            padding: "0.65rem 1rem",
-                                                            border: "1px solid #e5e5e5",
-                                                            borderRadius: 8,
-                                                            fontSize: "0.88rem",
-                                                            fontFamily: "inherit",
-                                                            outline: "none",
-                                                        }}
+                                                        style={{ flex: 1, padding: "0.65rem 1rem", border: "1px solid #e5e5e5", borderRadius: 8, fontSize: "0.88rem", fontFamily: "inherit", outline: "none" }}
                                                     />
                                                     <button
                                                         onClick={handleChat}
