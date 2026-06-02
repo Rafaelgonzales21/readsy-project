@@ -403,7 +403,23 @@ export default function HistoryPage() {
                                             </div>
                                             <p style={{ fontSize: "0.8rem", color: "#737373" }}>
                                                 {a.filename} · {formatDate(a.created_at)}
-                                            </p>
+                                                {(() => {
+                                                    const r = parseResult(a.result);
+                                                    if (!r?.reading_minutes) return null;
+                                                    return (
+                                                        <span style={{
+                                                            marginLeft: "0.5rem",
+                                                            display: "inline-flex", alignItems: "center", gap: "0.25rem",
+                                                        }}>
+                                                            ·
+                                                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#737373" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                                                            </svg>
+                                                            {r.reading_minutes} min lectura
+                                                        </span>
+                                                    );
+                                                })()}
+                                            </p>    
                                         </div>
                                         <div style={{ display: "flex", gap: "0.5rem", flexShrink: 0, flexWrap: "wrap" }}>
                                             <button onClick={() => handleSelect(a)} style={{ fontSize: "0.78rem", fontWeight: 600, padding: "0.35rem 0.75rem", borderRadius: 6, border: "1px solid #0a0a0a", background: isOpen ? "#0a0a0a" : "transparent", color: isOpen ? "#fff" : "#0a0a0a", cursor: "pointer", transition: "all 0.15s" }}>
