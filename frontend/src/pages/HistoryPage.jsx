@@ -14,6 +14,21 @@ const TAG_COLORS = [
 
 const tagColor = (tag) => TAG_COLORS[tag.length % TAG_COLORS.length];
 
+// ── SVG estrella ───────────────────────────────────────────────────────────────
+function StarIcon({ filled }) {
+    return (
+        <svg
+            width="15" height="15" viewBox="0 0 24 24"
+            fill={filled ? "#f59e0b" : "none"}
+            stroke={filled ? "#f59e0b" : "#d4d4d4"}
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+            style={{ display: "block", transition: "all 0.15s", flexShrink: 0 }}
+        >
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+        </svg>
+    );
+}
+
 // ── Componente de etiquetas ────────────────────────────────────────────────────
 function TagsEditor({ analysisId, initialTags, onUpdate }) {
     const [tags, setTags] = useState(initialTags);
@@ -138,7 +153,8 @@ export default function HistoryPage() {
     const [loading, setLoading] = useState(true);
     const [selected, setSelected] = useState(null);
     const [search, setSearch] = useState("");
-    const [filterTag, setFilterTag] = useState("");   // ← filtro por etiqueta
+    const [filterTag, setFilterTag] = useState("");
+    const [showOnlyFavorites, setShowOnlyFavorites] = useState(false); // ← NUEVO
 
     const [messages, setMessages] = useState([]);
     const [question, setQuestion] = useState("");
@@ -165,10 +181,10 @@ export default function HistoryPage() {
         try { return JSON.parse(result); } catch { return null; }
     }
 
-    // Todas las etiquetas únicas del usuario para el filtro
     const allTags = [...new Set(analyses.flatMap((a) => parseTags(a.tags)))];
+    const favCount = analyses.filter((a) => a.is_favorite).length; // ← NUEVO
 
-    // Filtrado combinado: búsqueda + etiqueta
+    // Filtrado combinado: búsqueda + etiqueta + favoritos
     const filtered = analyses.filter((a) => {
         const result = parseResult(a.result);
         const tags = parseTags(a.tags);
@@ -177,16 +193,29 @@ export default function HistoryPage() {
             result?.document_title?.toLowerCase().includes(search.toLowerCase()) ||
             a.content?.toLowerCase().includes(search.toLowerCase());
         const matchesTag = !filterTag || tags.includes(filterTag);
-        return matchesSearch && matchesTag;
+        const matchesFav = !showOnlyFavorites || a.is_favorite; // ← NUEVO
+        return matchesSearch && matchesTag && matchesFav;
     });
 
-    // Actualiza las etiquetas en el estado local sin recargar
     const handleTagsUpdate = (id, newTags) => {
         setAnalyses((prev) =>
             prev.map((a) =>
                 a.id === id ? { ...a, tags: JSON.stringify(newTags) } : a
             )
         );
+    };
+
+    // ── Toggle favorito ── NUEVO ───────────────────────────────────────────────
+    const handleToggleFavorite = async (id, e) => {
+        e.stopPropagation();
+        try {
+            const res = await api.put(`/api/analyses/${id}/favorite`);
+            setAnalyses((prev) =>
+                prev.map((a) => a.id === id ? { ...a, is_favorite: res.data.is_favorite } : a)
+            );
+        } catch {
+            // silencioso
+        }
     };
 
     const handleSelect = (a) => {
@@ -243,6 +272,12 @@ export default function HistoryPage() {
                     </h1>
                     <p style={{ color: "#737373", fontSize: "1rem" }}>
                         {analyses.length} {analyses.length === 1 ? "documento analizado" : "documentos analizados"}
+                        {/* ← NUEVO: contador favoritos */}
+                        {favCount > 0 && (
+                            <span style={{ marginLeft: "0.5rem", color: "#f59e0b", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
+                                · <StarIcon filled={true} /> {favCount} {favCount === 1 ? "favorito" : "favoritos"}
+                            </span>
+                        )}
                     </p>
                 </header>
 
@@ -267,10 +302,29 @@ export default function HistoryPage() {
                     </div>
                 )}
 
-                {/* Filtro por etiquetas */}
-                {!loading && allTags.length > 0 && (
+                {/* Filtro por etiquetas + favoritos ← NUEVO botón favoritos */}
+                {!loading && (allTags.length > 0 || favCount > 0) && (
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "1.25rem", alignItems: "center" }}>
                         <span style={{ fontSize: "0.75rem", color: "#737373", fontWeight: 600, marginRight: "0.25rem" }}>Filtrar:</span>
+
+                        {/* Botón favoritos ← NUEVO */}
+                        {favCount > 0 && (
+                            <button
+                                onClick={() => setShowOnlyFavorites((p) => !p)}
+                                style={{
+                                    display: "inline-flex", alignItems: "center", gap: "0.3rem",
+                                    padding: "0.2rem 0.65rem", borderRadius: 20,
+                                    fontSize: "0.72rem", fontWeight: 600, cursor: "pointer",
+                                    background: showOnlyFavorites ? "#f59e0b" : "#fffbeb",
+                                    color: showOnlyFavorites ? "#fff" : "#92400e",
+                                    border: "1px solid #fde68a", transition: "all 0.15s",
+                                }}
+                            >
+                                <StarIcon filled={showOnlyFavorites} />
+                                Favoritos ({favCount})
+                            </button>
+                        )}
+
                         {allTags.map((tag) => {
                             const c = tagColor(tag);
                             const active = filterTag === tag;
@@ -291,9 +345,9 @@ export default function HistoryPage() {
                                 </button>
                             );
                         })}
-                        {filterTag && (
-                            <button onClick={() => setFilterTag("")} style={{ fontSize: "0.72rem", color: "#737373", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>
-                                Quitar filtro
+                        {(filterTag || showOnlyFavorites) && (
+                            <button onClick={() => { setFilterTag(""); setShowOnlyFavorites(false); }} style={{ fontSize: "0.72rem", color: "#737373", background: "none", border: "none", cursor: "pointer", textDecoration: "underline" }}>
+                                Quitar filtros
                             </button>
                         )}
                     </div>
@@ -317,7 +371,7 @@ export default function HistoryPage() {
                 {!loading && analyses.length > 0 && filtered.length === 0 && (
                     <div className="card" style={{ padding: "2rem", textAlign: "center" }}>
                         <p style={{ color: "#737373" }}>No se encontraron análisis con ese criterio.</p>
-                        <button onClick={() => { setSearch(""); setFilterTag(""); }} style={{ marginTop: "1rem", fontSize: "0.85rem", color: "#0a0a0a", background: "none", border: "none", cursor: "pointer", fontWeight: 600, textDecoration: "underline" }}>
+                        <button onClick={() => { setSearch(""); setFilterTag(""); setShowOnlyFavorites(false); }} style={{ marginTop: "1rem", fontSize: "0.85rem", color: "#0a0a0a", background: "none", border: "none", cursor: "pointer", fontWeight: 600, textDecoration: "underline" }}>
                             Limpiar filtros
                         </button>
                     </div>
@@ -331,12 +385,22 @@ export default function HistoryPage() {
                             const tags = parseTags(a.tags);
 
                             return (
-                                <div key={a.id} className="card" style={{ padding: "1.5rem" }}>
+                                <div key={a.id} className="card" style={{ padding: "1.5rem", borderLeft: a.is_favorite ? "3px solid #f59e0b" : "3px solid transparent" /* ← NUEVO borde */ }}>
                                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem" }}>
                                         <div style={{ flex: 1 }}>
-                                            <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#0a0a0a", marginBottom: "0.25rem" }}>
-                                                {result?.document_title || a.filename}
-                                            </p>
+                                            {/* ← NUEVO: estrella + título */}
+                                            <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.25rem" }}>
+                                                <button
+                                                    onClick={(e) => handleToggleFavorite(a.id, e)}
+                                                    title={a.is_favorite ? "Quitar de favoritos" : "Añadir a favoritos"}
+                                                    style={{ background: "none", border: "none", cursor: "pointer", padding: "1px", display: "flex", alignItems: "center" }}
+                                                >
+                                                    <StarIcon filled={a.is_favorite} />
+                                                </button>
+                                                <p style={{ fontWeight: 700, fontSize: "0.95rem", color: "#0a0a0a" }}>
+                                                    {result?.document_title || a.filename}
+                                                </p>
+                                            </div>
                                             <p style={{ fontSize: "0.8rem", color: "#737373" }}>
                                                 {a.filename} · {formatDate(a.created_at)}
                                             </p>
