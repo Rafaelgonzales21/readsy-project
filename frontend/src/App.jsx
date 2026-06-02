@@ -9,6 +9,7 @@ import RegisterPage from "./pages/RegisterPage";
 import HistoryPage from "./pages/HistoryPage";
 import DashboardPage from "./pages/Dashboard";
 import ProfilePage from "./pages/ProfilePage";
+import ComparePage from "./pages/ComparePage";
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
             <Route path="/history" element={<HistoryPage/>} />
             <Route path="/dashboard" element={<DashboardPage/>}/>
             <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/compare" element={<ComparePage/>}/>
           </Route>
 
           {/* Cualquier ruta desconocida → home */}

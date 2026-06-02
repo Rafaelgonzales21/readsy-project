@@ -57,6 +57,7 @@ export default function Navbar() {
                         {navLink("/", "Analizar")}
                         {navLink("/dashboard", "Dashboard")}
                         {navLink("/history", "Historial")}
+                        {navLink("/compare", "Comparar")}
                         {navLink("/profile", "Perfil")}
                     </div>
                 )}
