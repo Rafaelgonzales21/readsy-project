@@ -17,6 +17,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+
           {/* Públicas */}
           <Route path="/login"    element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
@@ -30,7 +31,7 @@ function App() {
             <Route path="/compare" element={<ComparePage/>}/>
           </Route>
 
-          {/* Cualquier ruta desconocida → home */}
+          {/* Cualquier ruta desconocida a home */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
